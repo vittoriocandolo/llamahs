@@ -1,0 +1,1 @@
+llama-server -m /path/to/model.gguf --ctx-size 8192 --temp 0.6 --top-p 0.95 --top-k 20 --min-p 0.1 --port 8080
