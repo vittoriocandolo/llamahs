@@ -1,0 +1,7 @@
+__pycache__
+.venv/
+logs/
+profiles/*
+!profiles/*.example
+workspace/*
+!workspace/*.md
