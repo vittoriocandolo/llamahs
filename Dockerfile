@@ -1,5 +1,5 @@
 # Ubuntu 24.04, pinned by digest so that every build starts from the same image; Dependabot proposes updates.
-FROM ubuntu:24.04@sha256:9c7f200c07e3d4a03e7249d2c16bf66a51120fb876aa2242cf31451412543289
+FROM ubuntu:25.10@sha256:7cc5e35f6567ee8c66d2abb4aab0fd866669e6207c237c3a8f0947a5c7f17092
 
 RUN ln -snf /usr/share/zoneinfo/Etc/UTC /etc/localtime \
     && echo Etc/UTC >/etc/timezone \
