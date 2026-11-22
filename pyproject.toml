@@ -1,0 +1,99 @@
+[project]
+name = "llamahs"
+version = "0.1.0"
+description = "A basic harness that gives a local model a bash tool in a locked-down Docker container"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+authors = [{ name = "Vittorio Candolo" }]
+dependencies = []  # the standard library only: it runs as `python src/main.py`
+
+[project.urls]
+Repository = "https://github.com/vittoriocandolo/llamahs"
+Changelog = "https://github.com/vittoriocandolo/llamahs/blob/main/CHANGELOG.md"
+Issues = "https://github.com/vittoriocandolo/llamahs/issues"
+
+[dependency-groups]
+dev = ["coverage>=7.17", "mdformat>=0.7.22", "mdformat-dollarmath>=0.0.5", "mdformat-frontmatter>=2.1", "mdformat-gfm>=1.0", "mypy>=2.4", "pytest>=9.1", "ruff>=0.17", "typos>=1.51", "zizmor>=1.31"]
+
+[tool.uv]
+required-version = ">=0.13"
+package = false  # nothing to build or install: the scripts in src/ run as they are
+
+[tool.mypy]
+files = ["src", "tests"]
+mypy_path = "src"
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+enable_error_code = [
+    "deprecated",
+    "exhaustive-match",
+    "explicit-override",
+    "ignore-without-code",
+    "mutable-override",
+    "possibly-undefined",
+    "redundant-expr",
+    "redundant-self",
+    "truthy-bool",
+    "truthy-iterable",
+    "unimported-reveal",
+    "unused-awaitable",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+strict = true
+filterwarnings = ["error"]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 100  # every line and every branch: each behavior has a test
+exclude_also = ['if __name__ == "__main__":']  # the script's entry, which the tests call as main.main
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D203",  # contradicts D211: no blank line before a class docstring
+    "D213",  # contradicts D212: a multi-line docstring's summary starts on its first line
+    "T201",  # print is the interface: the conversation happens on standard output
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]  # pytest checks with assert, and rewrites it so that it also runs under python -O
+"tests/test_runtime.py" = ["S101", "S108"]  # and the container's private /tmp, as in runtime.py
+"src/main.py" = ["S310"]  # requests go only to base_url's own http://127.0.0.1 address
+"src/runtime.py" = [
+    "S108",  # /tmp here is the container's own private scratch, not the host's
+    "S310",  # as in main.py: the server's own http://127.0.0.1 address
+    "S602",  # on Windows the profile's command line is the user's own, run by cmd as they wrote it
+    "S603",  # Docker, found on PATH, and bash with the user's own command line
+]
+"src/settings.py" = ["S108"]  # as in runtime.py: a path in the container's private /tmp
+
+[tool.ruff.lint.flake8-copyright]
+notice-rgx = '(?m)^# Copyright \(C\) \d{4}(-\d{4})? .+\n# SPDX-License-Identifier: MIT$'  # the copyright line, then the SPDX licence identifier
+
+[tool.typos.default]
+locale = "en-gb"  # British spelling, with -ize (Oxford): the -ize forms in use are listed below
+
+[tool.typos.default.extend-words]
+summarize = "summarize"
+
+# the -ise spellings of the same words, corrected to -ize
+summarise = "summarize"
+
+[tool.typos.files]
+extend-exclude = [
+  "LICENSE",  # the licence's own text, as its authors wrote it
+]

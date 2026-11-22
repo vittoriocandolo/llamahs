@@ -1,0 +1,6 @@
+# mdformat (with mdformat-gfm, mdformat-dollarmath and mdformat-frontmatter) formats the Markdown, as CONTRIBUTING.md says
+wrap = 120  # as long as a line of code
+number = true  # a numbered list keeps its numbers
+
+[plugin.tables]
+compact_tables = true  # a row is as long as its cells: a table row cannot wrap, and padding would only lengthen it
